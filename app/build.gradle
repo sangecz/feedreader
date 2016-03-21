@@ -1,0 +1,38 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+/*
+    target urcuje s jakym API lvl app pocita,
+    vracela-li metoda na drivejsim API lvl neco jineho nez na targetovanem, musime s tim pocitat
+    neuvedene targetSdkVersion == minSdkVersion
+    stav OS v urcitem API lvl se pouzije spravne jeho, tzn. target se ignoruje, nepouzije se novejsi
+
+    napr. u API 23 => castecna permissions, nastaveni targetSdkVersion na (se projevi):
+        -  <22: prazdna data u zakazanych veci
+        - >=23: pad (neosetreno) nebo dialog upozoneni (osetreno)
+
+    - gravity - rodicovo vlastnost, jak v nem budou rozlozeny potomci
+    - layout-gravity - jak se bude chovat potomek v rodici (blizsi vlastnost)
+ */
+    defaultConfig {
+        applicationId "cz.cvut.marekp11.feedreader"
+        minSdkVersion 14
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:design:23.2.0'
+}

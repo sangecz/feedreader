@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">feedreader</string>
+
+    <string name="action_config_feeds">Configure feeds</string>
+    <string name="action_prefs">Preferences</string>
+
+    <string name="prefs_title">Background sync only on WiFi</string>
+    <string name="prefs_body">Synchronizes the feeds on background only when connected to WiFi</string>
+
+    <string name="article_detail">Article detail</string>
+    <string name="share">Choose app to share</string>
+
+    <string name="feed_add_title">Add feed</string>
+    <string name="feed_add_placeholder_url">Type feed url</string>
+    <string name="feed_del_title">Delete feed</string>
+    <string name="feed_del_msg">Do you want to delete the feed</string>
+
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_del">Delete</string>
+    <string name="btn_add">Add</string>
+
+    <string name="toast_refresh">Refresh</string>
+    <string name="toast_share">Share</string>
+    <string name="toast_added">Feed added</string>
+    <string name="toast_removed">The feed was deleted</string>
+
+
+
+
+
+</resources>
