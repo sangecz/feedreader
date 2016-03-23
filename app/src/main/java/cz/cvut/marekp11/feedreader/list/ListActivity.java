@@ -1,14 +1,14 @@
-package cz.cvut.marekp11.feedreader;
+package cz.cvut.marekp11.feedreader.list;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import cz.cvut.marekp11.feedreader.R;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -17,13 +17,20 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+
+//        ImageView iv = new ImageView(this);
+//        iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_sync));
+//        toolbar.addView(iv);
+
         setSupportActionBar(toolbar);
 
-        createMockups();
-    }
-
-    private void createMockups() {
-
+        if(savedInstanceState == null) {
+            ListFragment fragment = ListFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container_list, fragment)
+                    .commit();
+        }
     }
 
     @Override

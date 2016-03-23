@@ -3,12 +3,15 @@
 
     <string name="action_config_feeds">Configure feeds</string>
     <string name="action_prefs">Preferences</string>
+    <string name="action_share">SHARE</string>
+    <string name="action_refresh">REFRESH</string>
 
     <string name="prefs_title">Background sync only on WiFi</string>
     <string name="prefs_body">Synchronizes the feeds on background only when connected to WiFi</string>
 
     <string name="article_detail">Article detail</string>
-    <string name="share">Choose app to share</string>
+    <string name="article_share">Choose app to share</string>
+    <string name="article_share_text">I found an awesome article to read, check it here: http://example.com</string>
 
     <string name="feed_add_title">Add feed</string>
     <string name="feed_add_placeholder_url">Type feed url</string>

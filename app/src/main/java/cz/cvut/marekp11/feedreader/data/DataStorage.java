@@ -5,11 +5,29 @@ package cz.cvut.marekp11.feedreader.data;
  */
 public class DataStorage {
 
-    public static final int ARTICLES_CNT = 16;
-    public static final int HEADLINE_LETTERS_CNT = 80;
-    public static final int PREVIEW_LETTERS_CNT = 200;
+    public static final int ARTICLES_CNT = 17;
+    public static final int HEADLINE_LETTERS_CNT = 60;
 
-    public static final String[] articles = new String[]{
+    private static final String[] articles = new String[]{
+            "<h3>HTML Ipsum Present sqdetyue habitant morbi tristiqu</h3>" +
+            "<p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href=\"#\">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>" +
+                    "<ol>" +
+                    "   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>" +
+                    "   <li>Aliquam tincidunt mauris eu risus.</li>" +
+                    "</ol>" +
+                    "<blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>" +
+                    "<h3>Header Level 3</h3>" +
+                    "<ul>" +
+                    "   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>" +
+                    "   <li>Aliquam tincidunt mauris eu risus.</li>" +
+                    "</ul>" +
+                    "<pre><code>" +
+                    "#header h1 a { " +
+                    "display: block; " +
+                    "width: 300px; " +
+                    "height: 80px; " +
+                    "}" +
+                    "</code></pre>",
             "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In enim a arcu imperdiet malesuada. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Mauris elementum mauris vitae tortor. Ut tempus purus at lorem. Nulla non lectus sed nisl molestie malesuada. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Fusce suscipit libero eget elit. Mauris tincidunt sem sed arcu. Integer lacinia. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam eget nisl. Donec iaculis gravida nulla. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
             "Integer pellentesque quam vel velit. Aliquam erat volutpat. Et harum quidem rerum facilis est et expedita distinctio. Vivamus luctus egestas leo. Phasellus faucibus molestie nisl. Aliquam in lorem sit amet leo accumsan lacinia. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Nunc auctor. Fusce aliquam vestibulum ipsum. Etiam quis quam. Sed convallis magna eu sem. Quisque porta. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Phasellus faucibus molestie nisl. Maecenas aliquet accumsan leo. Cras elementum. Curabitur bibendum justo non orci. Curabitur ligula sapien, pulvinar a vestibulum quis, facilisis vel sapien. Nulla pulvinar eleifend sem.",
             "Duis pulvinar. Suspendisse sagittis ultrices augue. Fusce tellus odio, dapibus id fermentum quis, suscipit id erat. Etiam dictum tincidunt diam. Vivamus ac leo pretium faucibus. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Sed ac dolor sit amet purus malesuada congue. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Cras elementum. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Pellentesque pretium lectus id turpis. Mauris dolor felis, sagittis at, luctus sed, aliquam non, tellus. Aenean fermentum risus id tortor. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Nullam at arcu a est sollicitudin euismod.",
@@ -28,6 +46,11 @@ public class DataStorage {
             "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nunc tincidunt ante vitae massa. Nulla accumsan, elit sit amet varius semper, nulla mauris mollis quam, tempor suscipit diam nulla vel leo. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Vestibulum fermentum tortor id mi. In rutrum. Nullam at arcu a est sollicitudin euismod. Aliquam ante. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Donec iaculis gravida nulla. Pellentesque pretium lectus id turpis. Nullam sit amet magna in magna gravida vehicula. Curabitur vitae diam non enim vestibulum interdum. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Etiam bibendum elit eget erat. Integer lacinia."
     };
 
+    public static String getNthHeadline(int i) {
+        return articles[i].substring(0, HEADLINE_LETTERS_CNT);
+    }
 
-
+    public static String getNthContent(int i) {
+        return articles[i].substring(HEADLINE_LETTERS_CNT);
+    }
 }
