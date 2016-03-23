@@ -51,7 +51,6 @@ public class ListFragment extends Fragment {
             final String headline = DataStorage.getNthHeadline(i);
             final String content = DataStorage.getNthContent(i);
 
-            final int finalI = i;
             listItemLL.setOnClickListener(new LinearLayout.OnClickListener() {
                 @Override
                 public void onClick(View v) {

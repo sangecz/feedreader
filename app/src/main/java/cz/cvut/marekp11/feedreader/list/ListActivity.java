@@ -16,14 +16,8 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
 
-//        ImageView iv = new ImageView(this);
-//        iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_sync));
-//        toolbar.addView(iv);
-
-        setSupportActionBar(toolbar);
+        setActionBar();
 
         if(savedInstanceState == null) {
             ListFragment fragment = ListFragment.newInstance();
@@ -31,6 +25,12 @@ public class ListActivity extends AppCompatActivity {
                     .add(R.id.container_list, fragment)
                     .commit();
         }
+    }
+
+    private void setActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        setSupportActionBar(toolbar);
     }
 
     @Override

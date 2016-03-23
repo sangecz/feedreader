@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/app_bar"/>
+        <include layout="@layout/app_bar_item"/>
 
     </android.support.design.widget.AppBarLayout>
 
