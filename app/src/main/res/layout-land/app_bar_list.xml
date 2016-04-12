@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:layout_height="wrap_content"
@@ -46,8 +46,8 @@
                 android:id="@+id/progress_bar_img"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:clickable="true"
                 android:src="@drawable/ic_sync"
+                android:clickable="true"
                 android:contentDescription="@string/action_refresh">
 
             </ImageView>

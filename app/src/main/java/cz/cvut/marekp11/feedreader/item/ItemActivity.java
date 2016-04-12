@@ -2,7 +2,6 @@ package cz.cvut.marekp11.feedreader.item;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,20 +9,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import cz.cvut.marekp11.feedreader.R;
 
 public class ItemActivity extends AppCompatActivity {
 
-    private static final String HEADLINE = "headline";
-    private static final String CONTENT = "content";
+    public static final String ITEM_ID = "itemId";
 
-    public static void start(Activity activity, String headline, String content) {
+    public static void start(Activity activity, int itemId) {
         Intent intent = new Intent(activity, ItemActivity.class);
-        intent.putExtra(HEADLINE, headline);
-        intent.putExtra(CONTENT, content);
+        intent.putExtra(ITEM_ID, itemId);
         activity.startActivity(intent);
     }
 
@@ -36,10 +31,9 @@ public class ItemActivity extends AppCompatActivity {
 
         if(savedInstanceState == null) {
             Intent i = getIntent();
-            String headline = i.getStringExtra(HEADLINE);
-            String content = i.getStringExtra(CONTENT);
+            int itemId = i.getIntExtra(ITEM_ID, 0);
 
-            ItemFragment fragment = ItemFragment.newInstance(headline, content);
+            ItemFragment fragment = ItemFragment.newInstance(itemId);
             getFragmentManager().beginTransaction()
                     .add(R.id.container_item, fragment)
                     .commit();
@@ -66,7 +60,6 @@ public class ItemActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_item, menu);
         return true;
     }
@@ -84,8 +77,6 @@ public class ItemActivity extends AppCompatActivity {
 
             return true;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 }

@@ -5,12 +5,12 @@
 
     <item android:id="@+id/action_config_feeds"
         android:title="@string/action_config_feeds"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         app:showAsAction="never" />
 
     <item android:id="@+id/action_prefs"
         android:title="@string/action_prefs"
-        android:orderInCategory="100"
+        android:orderInCategory="300"
         app:showAsAction="never" />
 
 </menu>

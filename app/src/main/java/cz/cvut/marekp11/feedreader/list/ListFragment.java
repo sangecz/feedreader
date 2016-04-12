@@ -1,25 +1,27 @@
 package cz.cvut.marekp11.feedreader.list;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.data.DataStorage;
 import cz.cvut.marekp11.feedreader.item.ItemActivity;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class ListFragment extends Fragment {
 
+
+    private static final int LINE_SEPARATOR_HEIGHT = 1;
+    private FragmentListListener mListener;
 
     public static ListFragment newInstance() {
 
@@ -51,10 +53,11 @@ public class ListFragment extends Fragment {
             final String headline = DataStorage.getNthHeadline(i);
             final String content = DataStorage.getNthContent(i);
 
+            final int finalI = i;
             listItemLL.setOnClickListener(new LinearLayout.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ItemActivity.start(getActivity(), headline, content);
+                    mListener.showItem(finalI);
                 }
             });
 
@@ -65,7 +68,7 @@ public class ListFragment extends Fragment {
             previewTV.setText(Html.fromHtml(content).toString());
 
             View line = new View(getActivity());
-            line.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 1));
+            line.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LINE_SEPARATOR_HEIGHT));
             line.setBackgroundResource(R.color.gray);
 
             listLL.addView(listItemLL);
@@ -74,4 +77,22 @@ public class ListFragment extends Fragment {
         return fragmentView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            if(context instanceof Activity) {
+                mListener = (FragmentListListener) context;
+            }
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + getString(R.string.must_implement) + ListFragment.FragmentListListener.class.getSimpleName());
+        }
+    }
+
+
+    public interface FragmentListListener {
+        public void showItem(int itemId);
+    }
 }

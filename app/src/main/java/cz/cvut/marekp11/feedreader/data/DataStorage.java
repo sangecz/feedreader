@@ -1,16 +1,13 @@
 package cz.cvut.marekp11.feedreader.data;
 
-/**
- * Created by sange on 21/03/16.
- */
 public class DataStorage {
 
-    public static final int ARTICLES_CNT = 17;
+    public static final int ARTICLES_CNT = 18;
     public static final int HEADLINE_LETTERS_CNT = 60;
 
     private static final String[] articles = new String[]{
             "<h3>HTML Ipsum Present sqdetyue habitant morbi tristiqu</h3>" +
-            "<p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href=\"#\">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>" +
+            "<p><strong>Pellentesque habitant morbi tristique</strong> senectus et <a href=\"http://google.com\">netus</a> et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a href=\"#\">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>" +
                     "<ol>" +
                     "   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>" +
                     "   <li>Aliquam tincidunt mauris eu risus.</li>" +
@@ -28,6 +25,42 @@ public class DataStorage {
                     "height: 80px; " +
                     "}" +
                     "</code></pre>",
+            "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quid enim tanto opus" +
+                    "est instrumento in optimis artibus comparandis? Nam Pyrrho, Aristo, Erillus iam" +
+                    "diu abiecti. Quid autem habent admirationis, cum prope accesseris? Tertium autem" +
+                    "omnibus aut maximis rebus iis, quae secundum naturam sint, fruentem vivere. <a" +
+                    "href='http://loripsum.net/' target='_blank'>Idemne, quod iucunde?</a> <a" +
+                    "href='http://loripsum.net/' target='_blank'>Nemo igitur esse beatus potest.</a>" +
+                    "Quamquam tu hanc copiosiorem etiam soles dicere. Duo Reges: constructio" +
+                    "interrete. Eam si varietatem diceres, intellegerem, ut etiam non dicente te" +
+                    "intellego; Easdemne res? <a href='http://loripsum.net/' target='_blank'>Non" +
+                    "semper, inquam;</a> </p>" +
+                    "<p><a href='http://loripsum.net/' target='_blank'>Atqui reperies, inquit, in hoc" +
+                    "quidem pertinacem;</a> Sed ad rem redeamus; Hoc loco tenere se Triarius non" +
+                    "potuit. Itaque his sapiens semper vacabit. Qui non moveatur et offensione" +
+                    "turpitudinis et comprobatione honestatis? <a href='http://loripsum.net/'" +
+                    "target='_blank'>Facillimum id quidem est, inquam.</a> <a" +
+                    "href='http://loripsum.net/' target='_blank'>Ut optime, secundum naturam affectum" +
+                    "esse possit.</a> </p>" +
+                    "<p>Primum in nostrane potestate est, quid meminerimus? Quasi vero, inquit," +
+                    "perpetua oratio rhetorum solum, non etiam philosophorum sit. Ad quorum et" +
+                    "cognitionem et usum iam corroborati natura ipsa praeeunte deducimur. Nec vero" +
+                    "alia sunt quaerenda contra Carneadeam illam sententiam. </p>" +
+                    "<p><a href='http://loripsum.net/' target='_blank'>Nos cum te, M.</a> Cupiditates" +
+                    "non Epicuri divisione finiebat, sed sua satietate. Sed quid ages tandem, si" +
+                    "utilitas ab amicitia, ut fit saepe, defecerit? Satis est tibi in te, satis in" +
+                    "legibus, satis in mediocribus amicitiis praesidii. Praeclare hoc quidem. Sumenda" +
+                    "potius quam expetenda. Sed tamen intellego quid velit. Haec dicuntur" +
+                    "inconstantissime. Ego vero isti, inquam, permitto. Habent enim et bene longam et" +
+                    "satis litigiosam disputationem. Egone quaeris, inquit, quid sentiam? Huius," +
+                    "Lyco, oratione locuples, rebus ipsis ielunior. </p>" +
+                    "<p>Sit ista in Graecorum levitate perversitas, qui maledictis insectantur eos, a" +
+                    "quibus de veritate dissentiunt. Dici enim nihil potest verius. Roges enim" +
+                    "Aristonem, bonane ei videantur haec: vacuitas doloris, divitiae, valitudo; An" +
+                    "potest cupiditas finiri? Beatus sibi videtur esse moriens. Reguli reiciendam;" +
+                    "Sed tamen omne, quod de re bona dilucide dicitur, mihi praeclare dici videtur." +
+                    "Sed haec in pueris; Igitur neque stultorum quisquam beatus neque sapientium non" +
+                    "beatus. Sed ad haec, nisi molestum est, habeo quae velim. </p>",
             "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. In enim a arcu imperdiet malesuada. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Mauris elementum mauris vitae tortor. Ut tempus purus at lorem. Nulla non lectus sed nisl molestie malesuada. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Sed vel lectus. Donec odio tempus molestie, porttitor ut, iaculis quis, sem. Fusce suscipit libero eget elit. Mauris tincidunt sem sed arcu. Integer lacinia. Donec ipsum massa, ullamcorper in, auctor et, scelerisque sed, est. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam eget nisl. Donec iaculis gravida nulla. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
             "Integer pellentesque quam vel velit. Aliquam erat volutpat. Et harum quidem rerum facilis est et expedita distinctio. Vivamus luctus egestas leo. Phasellus faucibus molestie nisl. Aliquam in lorem sit amet leo accumsan lacinia. Morbi leo mi, nonummy eget tristique non, rhoncus non leo. Nunc auctor. Fusce aliquam vestibulum ipsum. Etiam quis quam. Sed convallis magna eu sem. Quisque porta. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Phasellus faucibus molestie nisl. Maecenas aliquet accumsan leo. Cras elementum. Curabitur bibendum justo non orci. Curabitur ligula sapien, pulvinar a vestibulum quis, facilisis vel sapien. Nulla pulvinar eleifend sem.",
             "Duis pulvinar. Suspendisse sagittis ultrices augue. Fusce tellus odio, dapibus id fermentum quis, suscipit id erat. Etiam dictum tincidunt diam. Vivamus ac leo pretium faucibus. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Phasellus enim erat, vestibulum vel, aliquam a, posuere eu, velit. Sed ac dolor sit amet purus malesuada congue. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Cras elementum. Nullam feugiat, turpis at pulvinar vulputate, erat libero tristique tellus, nec bibendum odio risus sit amet ante. Pellentesque pretium lectus id turpis. Mauris dolor felis, sagittis at, luctus sed, aliquam non, tellus. Aenean fermentum risus id tortor. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Nullam at arcu a est sollicitudin euismod.",

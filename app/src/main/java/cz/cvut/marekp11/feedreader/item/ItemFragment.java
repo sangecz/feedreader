@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,24 +15,20 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import cz.cvut.marekp11.feedreader.R;
+import cz.cvut.marekp11.feedreader.data.DataStorage;
 
-/**
- * Created by sange on 22/03/16.
- */
 public class ItemFragment extends Fragment {
 
-    private static final String STYLE = "body { margin:0; padding:0; } h1 {font-size: 1.2em;} ";
-    private String mHeadline;
-    private String mContent;
+    int mItemId;
 
-    public static ItemFragment newInstance(String headline, String content) {
+    public static ItemFragment newInstance(int itemId) {
 
         Bundle args = new Bundle();
+        args.putInt(ItemActivity.ITEM_ID, itemId);
 
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
-        fragment.mHeadline = headline;
-        fragment.mContent = content;
+
         return fragment;
     }
 
@@ -48,11 +45,18 @@ public class ItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ScrollView fragmentView = (ScrollView) inflater.inflate(R.layout.fragment_item, container, false);
 
-        TextView headlineTV = (TextView) fragmentView.findViewById(R.id.item_headline);
-        headlineTV.setText(Html.fromHtml(mHeadline).toString());
+        if(getArguments() != null) {
+            mItemId = getArguments().getInt(ItemActivity.ITEM_ID);
 
-        TextView contentTV = (TextView) fragmentView.findViewById(R.id.item_content);
-        contentTV.setText(Html.fromHtml(mContent));
+            TextView headlineTV = (TextView) fragmentView.findViewById(R.id.item_headline);
+            headlineTV.setText(Html.fromHtml(DataStorage.getNthHeadline(mItemId)).toString());
+
+            TextView contentTV = (TextView) fragmentView.findViewById(R.id.item_content);
+            contentTV.setText(Html.fromHtml(DataStorage.getNthContent(mItemId)));
+            // enable links
+            contentTV.setMovementMethod(LinkMovementMethod.getInstance());
+            contentTV.setLinksClickable(true);;
+        }
 
         return fragmentView;
     }
