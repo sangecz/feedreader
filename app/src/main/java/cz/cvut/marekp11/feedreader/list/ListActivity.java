@@ -1,31 +1,27 @@
 package cz.cvut.marekp11.feedreader.list;
 
 import android.app.FragmentManager;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+
 import cz.cvut.marekp11.feedreader.R;
+import cz.cvut.marekp11.feedreader.connectivity.NetworkStatus;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
-import cz.cvut.marekp11.feedreader.item.ItemActivity;
-import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
 public class ListActivity extends AppCompatActivity implements
         TaskFragment.TaskCallbacks {
 
+    private static boolean sUpdated = false;
     public static final String TASK_FRAGMET_TAG = "task";
     private static final String TAG = ListActivity.class.getSimpleName();
 
@@ -42,11 +38,9 @@ public class ListActivity extends AppCompatActivity implements
 
         initActionBar();
 
-        start();
-
-        // TEST
-        deleteDatabase();
-        fillDatabase();
+        if(!sUpdated) {
+            start();
+        }
     }
 
     private void initFragments(Bundle savedInstanceState) {
@@ -89,9 +83,13 @@ public class ListActivity extends AppCompatActivity implements
 
     private void start() {
         if(!mTaskFragment.isRunning()){
-            mTaskFragment.executeTask();
-            toggleProgressBarSpin(true);
-            Toast.makeText(ListActivity.this, getString(R.string.action_refresh), Toast.LENGTH_SHORT).show();
+            if(NetworkStatus.isNetworkAvailable(this)) {
+                mTaskFragment.executeTask();
+                toggleProgressBarSpin(true);
+                Toast.makeText(ListActivity.this, getString(R.string.toast_refresh), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ListActivity.this, getString(R.string.toast_no_internet), Toast.LENGTH_LONG).show();
+            }
         } else {
             toggleProgressBarSpin(true);
         }
@@ -122,8 +120,8 @@ public class ListActivity extends AppCompatActivity implements
     // TaskFragment.TaskCallbacks
     @Override
     public void onPreExecute() {
-        Log.d(TAG, "started");
         toggleProgressBarSpin(true);
+        deleteDatabase();
     }
 
     @Override
@@ -132,13 +130,21 @@ public class ListActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onNewFeed(ContentValues cv) {
+        insertContentValue(cv);
+    }
+
+    @Override
     public void onCancelled() {
 
     }
 
     @Override
-    public void onPostExecute() {
-        Log.d(TAG, "finished");
+    public void onPostExecute(ArrayList<ContentValues> cv) {
+        sUpdated = true;
+        for (ContentValues aCv : cv) {
+            insertContentValue(aCv);
+        }
         toggleProgressBarSpin(false);
     }
 
@@ -150,34 +156,6 @@ public class ListActivity extends AppCompatActivity implements
             mProgressBar.setVisibility(View.INVISIBLE);
             mProgressBarImg.setVisibility(View.VISIBLE);
         }
-    }
-
-    /////////////
-    /// TESTING
-    /////////////
-    private void fillDatabase() {
-        ContentValues cv = new ContentValues();
-        cv.put(TITLE, "Korespondencni seminar");
-        cv.put(TEXT, "Muze se zucastnit opravdu kazdy student...");
-        insertContentValue(cv);
-        cv.put(TITLE, "Den otevrenych dveri");
-        cv.put(TEXT, "Dne 12.12.2013. se kona jiz paty...");
-        insertContentValue(cv);
-        cv.put(TITLE, "Novy predmet");
-        cv.put(TEXT, "Muze se zucastnit opravdu kazdy studeze se zucastnit opravdu kazdze se zucastnit opravdu kazdze se zucastnit opravdu kazd");
-        insertContentValue(cv);
-        cv.put(TITLE, "Semestr zacal");
-        cv.put(TEXT, "Muze se zucastnit opravdu kazdy studeze se zucastnit opravdu kazdze se zucastnit opravdu kazd");
-        insertContentValue(cv);
-        cv.put(TITLE, "Konec semestru");
-        cv.put(TEXT, "Muze se zucastnit opravdu kazdy studeze <a href=\"http://google.com\">kunda</a>se zucastnit ucastnit opravdu kazdy studeze se zucastnit opravdu kazdze se zucastnit opravdu kaucastnit opravdu kazdy studeze se zucastnit opravdu kazdze se zucastnit opravdu kaucastnit opravdu kazdy studeze se zucastnit opravdu kazdze se zucastnit opravdu kaucastnit opravdu kazdy studeze se zucastnit opravdu kazdze se zucastnit opravdu kaopravdu kazdze se zucastnit opravdu kazdze se zucastnit opravdu kazdze se zucastnit opravdu kazd");
-        insertContentValue(cv);
-        cv.put(TITLE, "Studijni oddeleni");
-        cv.put(TEXT, "Muze se zucastnit opravdu kazdy stude");
-        insertContentValue(cv);
-        cv.put(TITLE, "Volba dekana");
-        cv.put(TEXT, "Vitezem se stava...");
-        insertContentValue(cv);
     }
 
     private void insertContentValue(ContentValues cv) {

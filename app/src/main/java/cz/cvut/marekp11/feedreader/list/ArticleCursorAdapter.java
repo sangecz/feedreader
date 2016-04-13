@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,8 @@ public class ArticleCursorAdapter extends CursorAdapter {
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		((TextView) view.findViewById(R.id.headline)).setText(cursor.getString(cursor.getColumnIndex(TITLE)));
-		((TextView) view.findViewById(R.id.preview)).setText(cursor.getString(cursor.getColumnIndex(TEXT)));
+		((TextView) view.findViewById(R.id.headline)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TITLE))));
+		((TextView) view.findViewById(R.id.preview)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TEXT))));
 
         view.setOnClickListener(detailListener);
 		int idColumnIndex = cursor.getColumnIndex(ID);

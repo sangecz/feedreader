@@ -2,18 +2,27 @@ package cz.cvut.marekp11.feedreader.list;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
+
+import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
+import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndEntryImpl;
+
+import java.util.ArrayList;
 
 import cz.cvut.marekp11.feedreader.R;
+import cz.cvut.marekp11.feedreader.connectivity.RssAtomFeedRetriever;
+
+import static cz.cvut.marekp11.feedreader.data.DbConstants.TEXT;
+import static cz.cvut.marekp11.feedreader.data.DbConstants.TITLE;
 
 public class TaskFragment extends Fragment  {
 
 	public static final String TAG = TaskFragment.class.getSimpleName();
 	private TaskCallbacks mCallbacks;
-	private UselessAsyncTask mTask;
+	private DownloadAndParseFeedsAsyncTask mTask;
 	private boolean mRunning;
 
 	public static interface TaskCallbacks {
@@ -21,9 +30,11 @@ public class TaskFragment extends Fragment  {
 
 		void onProgressUpdate(int percent);
 
+		void onNewFeed(ContentValues cv);
+
 		void onCancelled();
 
-		void onPostExecute();
+		void onPostExecute(ArrayList<ContentValues> cv);
 	}
 
 	@Override
@@ -49,7 +60,7 @@ public class TaskFragment extends Fragment  {
 	
 	
 	public void executeTask(){
-		mTask = new UselessAsyncTask();
+		mTask = new DownloadAndParseFeedsAsyncTask();
 		mTask.execute();
 	}
 	
@@ -67,7 +78,7 @@ public class TaskFragment extends Fragment  {
 		mCallbacks = null;
 	}
 
-	private class UselessAsyncTask extends AsyncTask<Void, Integer, Void> {
+	private class DownloadAndParseFeedsAsyncTask extends AsyncTask<Void, ContentValues, ArrayList<ContentValues>> {
 
 		@Override
 		protected void onPreExecute() {
@@ -78,18 +89,46 @@ public class TaskFragment extends Fragment  {
 		}
 
 		@Override
-		protected Void doInBackground(Void... none) {
-			for (int i = 0; !isCancelled() && i < 10; i++) {
-				SystemClock.sleep(2000);
-				publishProgress(i);
+		protected ArrayList<ContentValues> doInBackground(Void... none) {
+//			String url = "http://www.reddit.com/r/GameDeals/.rss";
+			String url1 = "http://www.chip.cz/rss/feed.php";
+			String url2 = "http://feeds.feedburner.com/SvetAndroida";
+			String urls[] = new String[]{url1, url2};
+
+			// download
+			RssAtomFeedRetriever rssAtomFeedRetriever = new RssAtomFeedRetriever();
+			// parsing & filling CV
+
+			StringBuilder sb = new StringBuilder(10);
+			ArrayList<ContentValues> contentValues = new ArrayList<>();
+
+			for(String url : urls) {
+				SyndFeed feed = rssAtomFeedRetriever.getMostRecentNews(url);
+				ArrayList<SyndEntryImpl> entries = (ArrayList<SyndEntryImpl>) feed.getEntries();
+
+				for (SyndEntryImpl e : entries) {
+					ContentValues cv = new ContentValues();
+					cv.put(TITLE, e.getTitle());
+
+					sb.setLength(0);
+					sb.append(e.getDescription().getValue());
+					sb.append(getString(R.string.link_prefix));
+					sb.append(e.getLink());
+					sb.append(getString(R.string.link_postfix));
+
+					cv.put(TEXT, sb.toString());
+
+					contentValues.add(cv);
+				}
 			}
-			return null;
+
+			return contentValues;
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... percent) {
+		protected void onProgressUpdate(ContentValues... cv) {
 			if (mCallbacks != null) {
-				mCallbacks.onProgressUpdate(percent[0]);
+				mCallbacks.onNewFeed(cv[0]);
 			}
 		}
 
@@ -102,10 +141,10 @@ public class TaskFragment extends Fragment  {
 		}
 
 		@Override
-		protected void onPostExecute(Void none) {
+		protected void onPostExecute(ArrayList<ContentValues> cv) {
 			mRunning = false;
 			if (mCallbacks != null) {
-				mCallbacks.onPostExecute();
+				mCallbacks.onPostExecute(cv);
 			}
 		}
 	}

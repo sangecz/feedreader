@@ -26,9 +26,13 @@
     <string name="toast_share">Share</string>
     <string name="toast_added">Feed added</string>
     <string name="toast_removed">The feed was deleted</string>
+    <string name="toast_empty_url">Feed URL was empty</string>
+    <string name="toast_no_internet">No internet connection. Could not refresh feeds.</string>
 
 
     <string name="must_implement">must implement</string>
+    <string name="link_prefix"><![CDATA[ <p><a href=\" ]]></string>
+    <string name="link_postfix"><![CDATA[ \">Link</a></p> ]]></string>
 
 
 </resources>
