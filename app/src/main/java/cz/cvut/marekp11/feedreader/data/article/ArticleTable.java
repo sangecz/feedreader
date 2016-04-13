@@ -1,4 +1,4 @@
-package cz.cvut.marekp11.feedreader.data;
+package cz.cvut.marekp11.feedreader.data.article;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 import android.database.sqlite.SQLiteDatabase;

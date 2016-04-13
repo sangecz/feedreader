@@ -7,9 +7,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+
+import cz.cvut.marekp11.feedreader.data.article.ArticleTable;
+import cz.cvut.marekp11.feedreader.data.feed.FeedTable;
+
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
-// TODO feedy do DB
+// TODO feedy Z DB
 public class FeedReaderContentProvider extends ContentProvider {
 
 	private FeedReaderDatabaseHelper mFeedReaderDbHelper;
@@ -18,14 +22,20 @@ public class FeedReaderContentProvider extends ContentProvider {
 
 	private static final int ARTICLE_LIST = 1;
 	private static final int ARTICLE_ID = 2;
+	private static final int FEED_LIST = 3;
+	private static final int FEED_ID = 4;
 
-	private static final String BASE_PATH = "articles";
-	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + BASE_PATH);
+	private static final String ARTICLES_PATH = "articles";
+	private static final String FEEDS_PATH = "feeds";
+	public static final Uri CONTENT_URI_ARTICLES = Uri.parse("content://" + AUTHORITY + "/" + ARTICLES_PATH);
+	public static final Uri CONTENT_URI_FEEDS = Uri.parse("content://" + AUTHORITY + "/" + FEEDS_PATH);
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	static {
-		sURIMatcher.addURI(AUTHORITY, BASE_PATH, ARTICLE_LIST);
-		sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", ARTICLE_ID);
+		sURIMatcher.addURI(AUTHORITY, ARTICLES_PATH, ARTICLE_LIST);
+		sURIMatcher.addURI(AUTHORITY, FEEDS_PATH, FEED_LIST);
+		sURIMatcher.addURI(AUTHORITY, ARTICLES_PATH + "/#", ARTICLE_ID);
+		sURIMatcher.addURI(AUTHORITY, FEEDS_PATH + "/#", FEED_ID);
 	}
 
 	@Override
@@ -40,15 +50,22 @@ public class FeedReaderContentProvider extends ContentProvider {
 
 		int uriType = sURIMatcher.match(uri);
 		switch (uriType) {
-		case ARTICLE_LIST:
-			queryBuilder.setTables(ArticleTable.TABLE_ARTICLE);
-			break;
-		case ARTICLE_ID:
-			queryBuilder.setTables(ArticleTable.TABLE_ARTICLE);
-			queryBuilder.appendWhere(ID + "=" + uri.getLastPathSegment());
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown URI: " + uri);
+			case ARTICLE_LIST:
+				queryBuilder.setTables(ArticleTable.TABLE_ARTICLE);
+				break;
+			case ARTICLE_ID:
+				queryBuilder.setTables(ArticleTable.TABLE_ARTICLE);
+				queryBuilder.appendWhere(ID + "=" + uri.getLastPathSegment());
+				break;
+			case FEED_LIST:
+				queryBuilder.setTables(FeedTable.TABLE_FEED);
+				break;
+			case FEED_ID:
+				queryBuilder.setTables(FeedTable.TABLE_FEED);
+				queryBuilder.appendWhere(ID + "=" + uri.getLastPathSegment());
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 
 		SQLiteDatabase db = mFeedReaderDbHelper.getWritableDatabase();
@@ -68,15 +85,24 @@ public class FeedReaderContentProvider extends ContentProvider {
 		int uriType = sURIMatcher.match(uri);
 		SQLiteDatabase sqlDB = mFeedReaderDbHelper.getWritableDatabase();
 		long id = 0;
+		boolean articles = false;
 		switch (uriType) {
-		case ARTICLE_LIST:
-			id = sqlDB.insert(ArticleTable.TABLE_ARTICLE, null, values);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown URI: " + uri);
+			case ARTICLE_LIST:
+				id = sqlDB.insert(ArticleTable.TABLE_ARTICLE, null, values);
+				articles = true;
+				break;
+			case FEED_LIST:
+				id = sqlDB.insert(FeedTable.TABLE_FEED, null, values);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
-		return Uri.parse(BASE_PATH + "/" + id);
+		if(articles) {
+			return Uri.parse(ARTICLES_PATH + "/" + id);
+		} else {
+			return Uri.parse(FEEDS_PATH + "/" + id);
+		}
 	}
 
 	@Override
@@ -85,15 +111,22 @@ public class FeedReaderContentProvider extends ContentProvider {
 		SQLiteDatabase sqlDB = mFeedReaderDbHelper.getWritableDatabase();
 		int rowsDeleted = 0;
 		switch (uriType) {
-		case ARTICLE_LIST:
-			rowsDeleted = sqlDB.delete(ArticleTable.TABLE_ARTICLE, selection, selectionArgs);
-			break;
-		case ARTICLE_ID:
-			String id = uri.getLastPathSegment();
-			rowsDeleted = sqlDB.delete(ArticleTable.TABLE_ARTICLE, ID + "=" + id, null);
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown URI: " + uri);
+			case ARTICLE_LIST:
+				rowsDeleted = sqlDB.delete(ArticleTable.TABLE_ARTICLE, selection, selectionArgs);
+				break;
+			case ARTICLE_ID:
+				String id = uri.getLastPathSegment();
+				rowsDeleted = sqlDB.delete(ArticleTable.TABLE_ARTICLE, ID + "=" + id, null);
+				break;
+			case FEED_LIST:
+				rowsDeleted = sqlDB.delete(FeedTable.TABLE_FEED, selection, selectionArgs);
+				break;
+			case FEED_ID:
+				String id2 = uri.getLastPathSegment();
+				rowsDeleted = sqlDB.delete(FeedTable.TABLE_FEED, ID + "=" + id2, null);
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return rowsDeleted;

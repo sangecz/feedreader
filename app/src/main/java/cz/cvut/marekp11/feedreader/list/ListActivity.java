@@ -16,13 +16,14 @@ import java.util.ArrayList;
 
 import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.connectivity.NetworkStatus;
+import cz.cvut.marekp11.feedreader.connectivity.TaskFragment;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
+import cz.cvut.marekp11.feedreader.feed.FeedListActivity;
 
 public class ListActivity extends AppCompatActivity implements
         TaskFragment.TaskCallbacks {
 
-    private static boolean sUpdated = false;
-    public static final String TASK_FRAGMET_TAG = "task";
+    public static final String TASK_FRAGMET_TAG = TaskFragment.TAG;
     private static final String TAG = ListActivity.class.getSimpleName();
 
     private TaskFragment mTaskFragment;
@@ -38,9 +39,7 @@ public class ListActivity extends AppCompatActivity implements
 
         initActionBar();
 
-        if(!sUpdated) {
-            start();
-        }
+        start();
     }
 
     private void initFragments(Bundle savedInstanceState) {
@@ -106,7 +105,7 @@ public class ListActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_config_feeds) {
-            Toast.makeText(this, getString(R.string.action_config_feeds), Toast.LENGTH_SHORT).show();
+            FeedListActivity.start(this);
             return true;
         }
         if (id == R.id.action_prefs) {
@@ -141,7 +140,6 @@ public class ListActivity extends AppCompatActivity implements
 
     @Override
     public void onPostExecute(ArrayList<ContentValues> cv) {
-        sUpdated = true;
         for (ContentValues aCv : cv) {
             insertContentValue(aCv);
         }
@@ -159,10 +157,10 @@ public class ListActivity extends AppCompatActivity implements
     }
 
     private void insertContentValue(ContentValues cv) {
-        getContentResolver().insert(FeedReaderContentProvider.CONTENT_URI, cv);
+        getContentResolver().insert(FeedReaderContentProvider.CONTENT_URI_ARTICLES, cv);
     }
 
     private void deleteDatabase() {
-        getContentResolver().delete(FeedReaderContentProvider.CONTENT_URI, null, null);
+        getContentResolver().delete(FeedReaderContentProvider.CONTENT_URI_ARTICLES, null, null);
     }
 }

@@ -16,8 +16,6 @@ import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
-import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
-
 public class ItemFragment extends Fragment {
 
     public static ItemFragment newInstance(String id) {
@@ -56,7 +54,7 @@ public class ItemFragment extends Fragment {
         Activity activity = getActivity();
 
         if(activity != null) {
-            Cursor cursor = activity.getContentResolver().query(Uri.withAppendedPath(FeedReaderContentProvider.CONTENT_URI, id), new String[]{TEXT, TITLE}, null, null, null);
+            Cursor cursor = activity.getContentResolver().query(Uri.withAppendedPath(FeedReaderContentProvider.CONTENT_URI_ARTICLES, id), new String[]{TEXT, TITLE}, null, null, null);
             if (cursor != null) {
                 cursor.moveToFirst();
 

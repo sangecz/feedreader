@@ -1,10 +1,10 @@
-package cz.cvut.marekp11.feedreader.list;
+package cz.cvut.marekp11.feedreader.feed;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -17,24 +17,18 @@ import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
-public class ListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FeedListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private final int ARTICLE_LOADER = 1;
+    private final int FEED_LOADER = 2;
 
-    private FragmentListListener mListener;
-    private ListActivity mActivity;
-    private ArticleCursorAdapter mAdapter;
-
-    public static ListFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        ListFragment fragment = new ListFragment();
-        fragment.setArguments(args);
-        return fragment;
+    private FeedCursorAdapter.FeedDeleteListener mListener;
+    private FeedListActivity mActivity;
+    private FeedCursorAdapter mAdapter;
+    public static FeedListFragment newInstance() {
+        return new FeedListFragment();
     }
 
-    public ListFragment() {
+    public FeedListFragment() {
     }
 
     @Override
@@ -45,8 +39,8 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        ListView fragmentView = (ListView) inflater.inflate(R.layout.fragment_list, container, false);
+                             Bundle savedInstanceState) {
+        ListView fragmentView = (ListView) inflater.inflate(R.layout.fragment_feed, container, false);
         initList(fragmentView);
         return fragmentView;
     }
@@ -57,20 +51,21 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
 
         try {
             if(context instanceof Activity) {
-                mActivity = (ListActivity) context;
+                mActivity = (FeedListActivity) context;
+                mListener = (FeedCursorAdapter.FeedDeleteListener) mActivity;
             }
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + getString(R.string.must_implement) + ListFragment.FragmentListListener.class.getSimpleName());
+                    + getString(R.string.must_implement) + FeedCursorAdapter.FeedDeleteListener.class.getSimpleName());
         }
     }
 
     private void initList(View v) {
-        ListView mListView = (ListView) v.findViewById(R.id.database_content);
-        mAdapter = new ArticleCursorAdapter(mActivity, null, 0);
+        ListView mListView = (ListView) v.findViewById(R.id.database_content_feed);
+        mAdapter = new FeedCursorAdapter(mActivity, null, 0, mListener);
         mListView.setAdapter(mAdapter);
 
-        getLoaderManager().initLoader(ARTICLE_LOADER, null, this);
+        getLoaderManager().initLoader(FEED_LOADER, null, this);
     }
 
     // loader's callbacks
@@ -79,8 +74,9 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case ARTICLE_LOADER:
-                return new CursorLoader(mActivity, FeedReaderContentProvider.CONTENT_URI_ARTICLES, new String[] { ID, TITLE, TEXT }, null,
+            case FEED_LOADER:
+                return new CursorLoader(mActivity, FeedReaderContentProvider.CONTENT_URI_FEEDS,
+                        new String[] { ID, TITLE, TEXT }, null,
                         null, null);
             default:
                 break;
@@ -92,7 +88,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
-            case ARTICLE_LOADER:
+            case FEED_LOADER:
                 mAdapter.swapCursor(cursor);
                 break;
 
@@ -104,7 +100,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         switch (loader.getId()) {
-            case ARTICLE_LOADER:
+            case FEED_LOADER:
                 mAdapter.swapCursor(null);
                 break;
 
@@ -113,7 +109,4 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
         }
     }
 
-    public interface FragmentListListener {
-        public void showItem(String id);
-    }
 }

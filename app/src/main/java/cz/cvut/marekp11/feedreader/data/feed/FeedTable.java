@@ -1,4 +1,4 @@
-package cz.cvut.marekp11.feedreader.data;
+package cz.cvut.marekp11.feedreader.data.feed;
 
 import android.database.sqlite.SQLiteDatabase;
 

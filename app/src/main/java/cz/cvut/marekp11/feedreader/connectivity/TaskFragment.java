@@ -1,4 +1,4 @@
-package cz.cvut.marekp11.feedreader.list;
+package cz.cvut.marekp11.feedreader.connectivity;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,7 +13,6 @@ import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.Syn
 import java.util.ArrayList;
 
 import cz.cvut.marekp11.feedreader.R;
-import cz.cvut.marekp11.feedreader.connectivity.RssAtomFeedRetriever;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.TEXT;
 import static cz.cvut.marekp11.feedreader.data.DbConstants.TITLE;

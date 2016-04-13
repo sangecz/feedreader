@@ -5,6 +5,7 @@
     <string name="action_prefs">Preferences</string>
     <string name="action_share">SHARE</string>
     <string name="action_refresh">REFRESH</string>
+    <string name="action_add_feed">Add feed</string>
 
     <string name="prefs_title">Background sync only on WiFi</string>
     <string name="prefs_body">Synchronizes the feeds on background only when connected to WiFi</string>
@@ -16,7 +17,7 @@
     <string name="feed_add_title">Add feed</string>
     <string name="feed_add_placeholder_url">Type feed url</string>
     <string name="feed_del_title">Delete feed</string>
-    <string name="feed_del_msg">Do you want to delete the feed</string>
+    <string name="feed_del_msg">Do you want to delete the feed?</string>
 
     <string name="btn_cancel">Cancel</string>
     <string name="btn_del">Delete</string>
@@ -26,9 +27,9 @@
     <string name="toast_share">Share</string>
     <string name="toast_added">Feed added</string>
     <string name="toast_removed">The feed was deleted</string>
-    <string name="toast_empty_url">Feed URL was empty</string>
+    <string name="toast_empty_url">Empty feed URL</string>
     <string name="toast_no_internet">No internet connection. Could not refresh feeds.</string>
-
+    <string name="toast_bad_url">Bad feed URL format. Feed not added.</string>
 
     <string name="must_implement">must implement</string>
     <string name="link_prefix"><![CDATA[ <p><a href=\" ]]></string>
