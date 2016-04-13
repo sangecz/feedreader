@@ -2,6 +2,7 @@ package cz.cvut.marekp11.feedreader.list;
 
 import android.app.FragmentManager;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,9 +20,12 @@ import cz.cvut.marekp11.feedreader.connectivity.NetworkStatus;
 import cz.cvut.marekp11.feedreader.connectivity.TaskFragment;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
 import cz.cvut.marekp11.feedreader.feed.FeedListActivity;
+import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
 public class ListActivity extends AppCompatActivity implements
-        TaskFragment.TaskCallbacks {
+        TaskFragment.TaskCallbacks, ListFragment.FragmentListListener {
+
+    private static boolean sUpdate = true;
 
     public static final String TASK_FRAGMET_TAG = TaskFragment.TAG;
     private static final String TAG = ListActivity.class.getSimpleName();
@@ -39,7 +43,10 @@ public class ListActivity extends AppCompatActivity implements
 
         initActionBar();
 
-        start();
+        if (sUpdate) {
+            sUpdate = false;
+            start();
+        }
     }
 
     private void initFragments(Bundle savedInstanceState) {
@@ -83,7 +90,10 @@ public class ListActivity extends AppCompatActivity implements
     private void start() {
         if(!mTaskFragment.isRunning()){
             if(NetworkStatus.isNetworkAvailable(this)) {
-                mTaskFragment.executeTask();
+
+                ArrayList<String> list = extractFeedUrlsAsList();
+
+                mTaskFragment.executeTask(list);
                 toggleProgressBarSpin(true);
                 Toast.makeText(ListActivity.this, getString(R.string.toast_refresh), Toast.LENGTH_SHORT).show();
             } else {
@@ -92,6 +102,24 @@ public class ListActivity extends AppCompatActivity implements
         } else {
             toggleProgressBarSpin(true);
         }
+    }
+
+    private ArrayList<String> extractFeedUrlsAsList() {
+        Cursor cursor = getContentResolver().query(FeedReaderContentProvider.CONTENT_URI_FEEDS,
+                new String[]{ID, TITLE, TEXT}, null, null, null);
+
+        ArrayList<String> list = new ArrayList<>();
+        int textColumnIndex = 0;
+        if (cursor != null) {
+            textColumnIndex = cursor.getColumnIndex(TEXT);
+            while (cursor.moveToNext()) {
+                String url = cursor.getString(textColumnIndex);
+                list.add(url);
+            }
+            cursor.close();
+        }
+
+        return list;
     }
 
     @Override
@@ -120,7 +148,6 @@ public class ListActivity extends AppCompatActivity implements
     @Override
     public void onPreExecute() {
         toggleProgressBarSpin(true);
-        deleteDatabase();
     }
 
     @Override
@@ -135,14 +162,20 @@ public class ListActivity extends AppCompatActivity implements
 
     @Override
     public void onCancelled() {
-
     }
 
     @Override
-    public void onPostExecute(ArrayList<ContentValues> cv) {
+    public void onPostExecute(ArrayList<ContentValues> cv, boolean failed) {
+        if(failed) {
+            Toast.makeText(ListActivity.this, getString(R.string.toast_refresh_failed), Toast.LENGTH_LONG).show();
+        }
+
+        deleteDatabase();
+
         for (ContentValues aCv : cv) {
             insertContentValue(aCv);
         }
+
         toggleProgressBarSpin(false);
     }
 
@@ -162,5 +195,10 @@ public class ListActivity extends AppCompatActivity implements
 
     private void deleteDatabase() {
         getContentResolver().delete(FeedReaderContentProvider.CONTENT_URI_ARTICLES, null, null);
+    }
+
+    @Override
+    public void showItem(String id) {
+
     }
 }

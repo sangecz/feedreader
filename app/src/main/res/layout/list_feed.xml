@@ -10,14 +10,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<TextView-->
-        <!--android:id="@+id/headline"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textStyle="bold"-->
-        <!--android:textSize="16sp"-->
-        <!--android:layout_marginBottom="@dimen/article_vertical_margin"-->
-        <!--/>-->
+    <TextView
+        android:id="@+id/headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="@dimen/article_vertical_margin"
+        />
 
     <TextView
         android:id="@+id/url"

@@ -22,7 +22,6 @@ public class FeedListFragment extends Fragment implements LoaderManager.LoaderCa
     private final int FEED_LOADER = 2;
 
     private FeedCursorAdapter.FeedDeleteListener mListener;
-    private FeedListActivity mActivity;
     private FeedCursorAdapter mAdapter;
     public static FeedListFragment newInstance() {
         return new FeedListFragment();
@@ -50,10 +49,7 @@ public class FeedListFragment extends Fragment implements LoaderManager.LoaderCa
         super.onAttach(context);
 
         try {
-            if(context instanceof Activity) {
-                mActivity = (FeedListActivity) context;
-                mListener = (FeedCursorAdapter.FeedDeleteListener) mActivity;
-            }
+            mListener = (FeedCursorAdapter.FeedDeleteListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + getString(R.string.must_implement) + FeedCursorAdapter.FeedDeleteListener.class.getSimpleName());
@@ -62,7 +58,7 @@ public class FeedListFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void initList(View v) {
         ListView mListView = (ListView) v.findViewById(R.id.database_content_feed);
-        mAdapter = new FeedCursorAdapter(mActivity, null, 0, mListener);
+        mAdapter = new FeedCursorAdapter(getActivity(), null, 0, mListener);
         mListView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(FEED_LOADER, null, this);
@@ -75,7 +71,7 @@ public class FeedListFragment extends Fragment implements LoaderManager.LoaderCa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case FEED_LOADER:
-                return new CursorLoader(mActivity, FeedReaderContentProvider.CONTENT_URI_FEEDS,
+                return new CursorLoader(getActivity(), FeedReaderContentProvider.CONTENT_URI_FEEDS,
                         new String[] { ID, TITLE, TEXT }, null,
                         null, null);
             default:

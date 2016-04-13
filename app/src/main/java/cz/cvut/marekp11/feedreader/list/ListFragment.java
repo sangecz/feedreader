@@ -22,7 +22,6 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     private final int ARTICLE_LOADER = 1;
 
     private FragmentListListener mListener;
-    private ListActivity mActivity;
     private ArticleCursorAdapter mAdapter;
 
     public static ListFragment newInstance() {
@@ -56,9 +55,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onAttach(context);
 
         try {
-            if(context instanceof Activity) {
-                mActivity = (ListActivity) context;
-            }
+            mListener = (FragmentListListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + getString(R.string.must_implement) + ListFragment.FragmentListListener.class.getSimpleName());
@@ -67,7 +64,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private void initList(View v) {
         ListView mListView = (ListView) v.findViewById(R.id.database_content);
-        mAdapter = new ArticleCursorAdapter(mActivity, null, 0);
+        mAdapter = new ArticleCursorAdapter(getActivity(), null, 0);
         mListView.setAdapter(mAdapter);
 
         getLoaderManager().initLoader(ARTICLE_LOADER, null, this);
@@ -80,7 +77,7 @@ public class ListFragment extends Fragment implements LoaderManager.LoaderCallba
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case ARTICLE_LOADER:
-                return new CursorLoader(mActivity, FeedReaderContentProvider.CONTENT_URI_ARTICLES, new String[] { ID, TITLE, TEXT }, null,
+                return new CursorLoader(getActivity(), FeedReaderContentProvider.CONTENT_URI_ARTICLES, new String[] { ID, TITLE, TEXT }, null,
                         null, null);
             default:
                 break;

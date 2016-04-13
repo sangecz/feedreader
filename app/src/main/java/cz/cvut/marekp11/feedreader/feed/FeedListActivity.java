@@ -118,10 +118,11 @@ public class FeedListActivity extends AppCompatActivity implements FeedCursorAda
         try {
             URL url1 = new URL(url.trim());
             ContentValues cv = new ContentValues();
-            // TODO nacist title v TaskFragmentu
-            cv.put(TITLE, "");
+            cv.put(TITLE, url1.getHost() + url1.getPath());
             cv.put(TEXT, url1.toString());
             insertContentValue(cv);
+
+            Toast.makeText(this, getString(R.string.toast_added), Toast.LENGTH_SHORT).show();
         } catch (MalformedURLException e) {
             Toast.makeText(this, getString(R.string.toast_bad_url), Toast.LENGTH_LONG).show();
         }

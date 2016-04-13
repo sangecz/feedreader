@@ -30,6 +30,7 @@
     <string name="toast_empty_url">Empty feed URL</string>
     <string name="toast_no_internet">No internet connection. Could not refresh feeds.</string>
     <string name="toast_bad_url">Bad feed URL format. Feed not added.</string>
+    <string name="toast_refresh_failed">Refresh failed</string>
 
     <string name="must_implement">must implement</string>
     <string name="link_prefix"><![CDATA[ <p><a href=\" ]]></string>

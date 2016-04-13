@@ -38,7 +38,7 @@ public class FeedCursorAdapter extends CursorAdapter{
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-//        ((TextView) view.findViewById(R.id.headline)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TITLE))));
+        ((TextView) view.findViewById(R.id.headline)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TITLE))));
         ((TextView) view.findViewById(R.id.url)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TEXT))));
 
         view.setOnClickListener(deleteListener);
