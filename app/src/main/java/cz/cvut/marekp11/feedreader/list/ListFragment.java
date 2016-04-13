@@ -2,26 +2,38 @@ package cz.cvut.marekp11.feedreader.list;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.data.DataStorage;
+import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
 import cz.cvut.marekp11.feedreader.item.ItemActivity;
 
-public class ListFragment extends Fragment {
+import static cz.cvut.marekp11.feedreader.data.DbConstants.ID;
+import static cz.cvut.marekp11.feedreader.data.DbConstants.TEXT;
+import static cz.cvut.marekp11.feedreader.data.DbConstants.TITLE;
 
+public class ListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int LINE_SEPARATOR_HEIGHT = 1;
+    private final int ARTICLE_LOADER = 1;
+
     private FragmentListListener mListener;
+    private ListActivity mActivity;
+    private ArticleCursorAdapter mAdapter;
 
     public static ListFragment newInstance() {
 
@@ -44,36 +56,8 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        ScrollView fragmentView = (ScrollView) inflater.inflate(R.layout.fragment_list, container, false);
-        LinearLayout listLL = (LinearLayout) fragmentView.findViewById(R.id.listLL);
-
-        for (int i = 0; i < DataStorage.ARTICLES_CNT; i++) {
-            LinearLayout listItemLL = (LinearLayout) inflater.inflate(R.layout.list_item, null);
-
-            final String headline = DataStorage.getNthHeadline(i);
-            final String content = DataStorage.getNthContent(i);
-
-            final int finalI = i;
-            listItemLL.setOnClickListener(new LinearLayout.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.showItem(finalI);
-                }
-            });
-
-            TextView headlineTV = (TextView) listItemLL.findViewById(R.id.headline);
-            headlineTV.setText(Html.fromHtml(headline).toString());
-
-            TextView previewTV = (TextView) listItemLL.findViewById(R.id.preview);
-            previewTV.setText(Html.fromHtml(content).toString());
-
-            View line = new View(getActivity());
-            line.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LINE_SEPARATOR_HEIGHT));
-            line.setBackgroundResource(R.color.gray);
-
-            listLL.addView(listItemLL);
-            listLL.addView(line);
-        }
+        ListView fragmentView = (ListView) inflater.inflate(R.layout.fragment_list, container, false);
+        initList(fragmentView);
         return fragmentView;
     }
 
@@ -83,7 +67,7 @@ public class ListFragment extends Fragment {
 
         try {
             if(context instanceof Activity) {
-                mListener = (FragmentListListener) context;
+                mActivity = (ListActivity) context;
             }
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
@@ -91,8 +75,55 @@ public class ListFragment extends Fragment {
         }
     }
 
+    private void initList(View v) {
+        ListView mListView = (ListView) v.findViewById(R.id.database_content);
+        mAdapter = new ArticleCursorAdapter(mActivity, null, 0);
+        mListView.setAdapter(mAdapter);
+
+        getLoaderManager().initLoader(ARTICLE_LOADER, null, this);
+    }
+
+    // loader's callbacks
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case ARTICLE_LOADER:
+                return new CursorLoader(mActivity, FeedReaderContentProvider.CONTENT_URI, new String[] { ID, TITLE, TEXT }, null,
+                        null, null);
+            default:
+                break;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        switch (loader.getId()) {
+            case ARTICLE_LOADER:
+                mAdapter.swapCursor(cursor);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        switch (loader.getId()) {
+            case ARTICLE_LOADER:
+                mAdapter.swapCursor(null);
+                break;
+
+            default:
+                break;
+        }
+    }
 
     public interface FragmentListListener {
-        public void showItem(int itemId);
+        public void showItem(String id);
     }
 }

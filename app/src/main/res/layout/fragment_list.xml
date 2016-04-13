@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-
-    <LinearLayout
-        android:id="@+id/listLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    </LinearLayout>
-
-
-</ScrollView>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/database_content"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />

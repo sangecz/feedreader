@@ -1,6 +1,8 @@
 package cz.cvut.marekp11.feedreader.item;
 
+import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -14,11 +16,9 @@ import cz.cvut.marekp11.feedreader.R;
 
 public class ItemActivity extends AppCompatActivity {
 
-    public static final String ITEM_ID = "itemId";
-
-    public static void start(Activity activity, int itemId) {
+    public static void start(Context activity, String id) {
         Intent intent = new Intent(activity, ItemActivity.class);
-        intent.putExtra(ITEM_ID, itemId);
+        intent.putExtra(ID, id);
         activity.startActivity(intent);
     }
 
@@ -31,7 +31,7 @@ public class ItemActivity extends AppCompatActivity {
 
         if(savedInstanceState == null) {
             Intent i = getIntent();
-            int itemId = i.getIntExtra(ITEM_ID, 0);
+            String itemId = i.getStringExtra(ID);
 
             ItemFragment fragment = ItemFragment.newInstance(itemId);
             getFragmentManager().beginTransaction()
