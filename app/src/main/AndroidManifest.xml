@@ -26,6 +26,13 @@
             android:name="cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider"
             android:authorities="cz.cvut.feedreader"
             android:exported="false" />
+
+        <service
+            android:name="cz.cvut.marekp11.feedreader.connectivity.UpdateService"
+            android:enabled="true"
+            android:exported="false" />
+
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

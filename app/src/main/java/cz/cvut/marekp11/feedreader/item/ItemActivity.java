@@ -4,6 +4,7 @@ import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -56,27 +57,5 @@ public class ItemActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_item, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_share) {
-
-            Intent share = new Intent(android.content.Intent.ACTION_SEND);
-            share.setType("text/plain");
-            share.putExtra(Intent.EXTRA_TEXT, getString(R.string.article_share_text));
-            startActivity(Intent.createChooser(share, getString(R.string.article_share)));
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

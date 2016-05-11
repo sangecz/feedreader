@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.Html;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,37 +22,84 @@ import android.widget.TextView;
 
 public class ArticleCursorAdapter extends CursorAdapter {
 
+
+	private static class ViewHolder {
+
+		TextView headline;
+
+		TextView preview;
+		ViewHolder(View view) {
+			headline = (TextView) view.findViewById(R.id.headline);
+			preview = (TextView) view.findViewById(R.id.preview);
+		}
+
+	}
+	private int mHeadlineColumn;
+	private int mPreviewColumn;
+	private int mIdColumn;
 	private LayoutInflater mInflater;
 	private Context mContext;
-	
-	public ArticleCursorAdapter(Context context, Cursor c, int flags) {
-		super(context, c, flags);
+
+	public ArticleCursorAdapter(Context context, Cursor cursor) {
+		super(context, cursor, false);
 		mInflater = LayoutInflater.from(context);
 		mContext = context;
+		initColumns(cursor);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public Cursor swapCursor(Cursor newCursor) {
+		Cursor oldCursor = super.swapCursor(newCursor);
+		initColumns(newCursor);
+		return oldCursor;
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		return mInflater.inflate(R.layout.list_item, parent, false);
+		final View view = mInflater.inflate(R.layout.list_item, parent, false);
+		ViewHolder holder = new ViewHolder(view);
+		view.setTag(holder);
+		return view;
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		((TextView) view.findViewById(R.id.headline)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TITLE))));
-		((TextView) view.findViewById(R.id.preview)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TEXT))));
+		ViewHolder holder = (ViewHolder) view.getTag();
 
-        view.setOnClickListener(detailListener);
-		int idColumnIndex = cursor.getColumnIndex(ID);
-		view.setTag(cursor.getString(idColumnIndex));
+		view.setOnClickListener(getDetailListener(cursor.getString(mIdColumn)));
+
+		holder.headline.setText(Html.fromHtml(cursor.getString(mHeadlineColumn)));
+
+		String summary = cursor.getString(mPreviewColumn);
+		if (!TextUtils.isEmpty(summary)) {
+			holder.preview.setText(summary);
+			holder.preview.setVisibility(View.VISIBLE);
+		} else {
+			holder.preview.setVisibility(View.GONE);
+		}
 	}
 
+	private View.OnClickListener getDetailListener(final String id) {
+		return new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ItemActivity.start(mContext, id);
+			}
+		};
+	}
 
-	private View.OnClickListener detailListener = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-            ItemActivity.start(mContext, (String) v.getTag());
+	private void initColumns(Cursor cursor) {
+		if (cursor != null) {
+			mHeadlineColumn = cursor.getColumnIndex(TITLE);
+			mPreviewColumn = cursor.getColumnIndex(TEXT);
+			mIdColumn = cursor.getColumnIndex(ID);
 		}
-	};
+	}
+
 
 }

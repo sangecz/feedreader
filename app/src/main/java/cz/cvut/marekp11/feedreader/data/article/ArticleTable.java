@@ -12,7 +12,8 @@ public class ArticleTable {
 			+ "(" 
 			+ ID + " integer primary key autoincrement, "
 			+ TITLE + " text not null, "
-			+ TEXT + " text null "
+			+ TEXT + " text null, "
+			+ LINK + " text not null "
 			+ ");";
 	
 	public static void onCreate(SQLiteDatabase db) {

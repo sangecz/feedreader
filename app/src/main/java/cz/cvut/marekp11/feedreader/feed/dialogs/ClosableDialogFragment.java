@@ -31,13 +31,11 @@ public class ClosableDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
 
         try {
-            if(context instanceof Activity) {
-                mListener = (ClosableDialogFragmentListener) context;
-            }
+            mListener = (ClosableDialogFragmentListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + getString(R.string.must_implement)

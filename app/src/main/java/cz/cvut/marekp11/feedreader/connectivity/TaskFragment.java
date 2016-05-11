@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndEntryImpl;
@@ -13,40 +16,35 @@ import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.Syn
 import java.util.ArrayList;
 
 import cz.cvut.marekp11.feedreader.R;
+import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
 
-import static cz.cvut.marekp11.feedreader.data.DbConstants.TEXT;
-import static cz.cvut.marekp11.feedreader.data.DbConstants.TITLE;
+import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
 public class TaskFragment extends Fragment  {
 
 	public static final String TAG = TaskFragment.class.getSimpleName();
 	private TaskCallbacks mCallbacks;
-	private ArrayList<String> mFeedUrls;
 	private DownloadAndParseFeedsAsyncTask mTask;
 	private boolean mRunning;
 	private boolean mFailed;
 
-	public static interface TaskCallbacks {
+	public interface TaskCallbacks {
 		void onPreExecute();
 
 		void onProgressUpdate(int percent);
 
-		void onNewFeed(ContentValues cv);
-
 		void onCancelled();
 
-		void onPostExecute(ArrayList<ContentValues> cv, boolean failed);
+		void onPostExecute(boolean failed);
 
 	}
 
 	@Override
-	public void onAttach(Context context) {
+	public void onAttach(Activity context) {
 		super.onAttach(context);
 
 		try {
-			if(context instanceof Activity) {
-				mCallbacks = (TaskCallbacks) context;
-			}
+			mCallbacks = (TaskCallbacks) context;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(context.toString()
 					+ getString(R.string.must_implement) + TaskCallbacks.class.getSimpleName());
@@ -61,12 +59,9 @@ public class TaskFragment extends Fragment  {
 	}
 	
 	
-	public void executeTask(ArrayList<String> feedUrls){
-		mFeedUrls = feedUrls;
+	public void executeTask(){
 		mFailed = false;
-		if(mFeedUrls != null && !mFeedUrls.isEmpty()) {
-			mTask = new DownloadAndParseFeedsAsyncTask();
-		}
+		mTask = new DownloadAndParseFeedsAsyncTask();
 		mTask.execute();
 	}
 	
@@ -84,7 +79,7 @@ public class TaskFragment extends Fragment  {
 		mCallbacks = null;
 	}
 
-	private class DownloadAndParseFeedsAsyncTask extends AsyncTask<Void, ContentValues, ArrayList<ContentValues>> {
+	private class DownloadAndParseFeedsAsyncTask extends AsyncTask<Void, ContentValues, Void> {
 
 		@Override
 		protected void onPreExecute() {
@@ -95,7 +90,13 @@ public class TaskFragment extends Fragment  {
 		}
 
 		@Override
-		protected ArrayList<ContentValues> doInBackground(Void... none) {
+		protected Void doInBackground(Void... none) {
+
+			// get URLs from DB
+			ArrayList<String> feedUrls = extractFeedUrlsAsList();
+			if (feedUrls == null || feedUrls.isEmpty()) {
+				return null;
+			}
 
 			// download
 			RssAtomFeedRetriever rssAtomFeedRetriever = new RssAtomFeedRetriever();
@@ -103,8 +104,7 @@ public class TaskFragment extends Fragment  {
 			// parsing & filling CV
 			StringBuilder sb = new StringBuilder(10);
 			ArrayList<ContentValues> contentValues = new ArrayList<>();
-
-			for(String url : mFeedUrls) {
+			for(String url : feedUrls) {
 				try {
 					SyndFeed feed = rssAtomFeedRetriever.getMostRecentNews(url);
 					ArrayList<SyndEntryImpl> entries = (ArrayList<SyndEntryImpl>) feed.getEntries();
@@ -115,7 +115,9 @@ public class TaskFragment extends Fragment  {
 				}
 			}
 
-			return contentValues;
+			insertData(contentValues);
+
+			return null;
 		}
 
 		private void parseEntries(StringBuilder sb, ArrayList<ContentValues> contentValues, ArrayList<SyndEntryImpl> entries) {
@@ -128,24 +130,20 @@ public class TaskFragment extends Fragment  {
                 sb.append(getString(R.string.link_prefix));
                 sb.append(e.getLink());
                 sb.append(getString(R.string.link_postfix));
-//				sb.append(getString(R.string.links_prefix));
-//				for (Object link : e.getLinks()) {
-//					sb.append(getString(R.string))
-//					sb.append((String) link);
-//				}
-//				sb.append(getString(R.string.links_postfix));
-
                 cv.put(TEXT, sb.toString());
 
-                contentValues.add(cv);
+                cv.put(LINK, e.getLink());
+
+				publishProgress(cv);
+				SystemClock.sleep(500);
+
+				contentValues.add(cv);
             }
 		}
 
 		@Override
 		protected void onProgressUpdate(ContentValues... cv) {
-			if (mCallbacks != null) {
-				mCallbacks.onNewFeed(cv[0]);
-			}
+			insertFeed(cv[0]);
 		}
 
 		@Override
@@ -157,11 +155,50 @@ public class TaskFragment extends Fragment  {
 		}
 
 		@Override
-		protected void onPostExecute(ArrayList<ContentValues> cv) {
+		protected void onPostExecute(Void val) {
 			mRunning = false;
 			if (mCallbacks != null) {
-				mCallbacks.onPostExecute(cv, mFailed);
+				mCallbacks.onPostExecute(mFailed);
 			}
 		}
+	}
+
+	private void insertData(ArrayList<ContentValues> contentValues) {
+		if (!contentValues.isEmpty() && getActivity() != null) {
+			getActivity().getContentResolver().delete(FeedReaderContentProvider.CONTENT_URI_ARTICLES, null, null);
+		}
+
+		for (ContentValues cv : contentValues) {
+			insertFeed(cv);
+		}
+	}
+
+	private void insertFeed(ContentValues cv) {
+		if(getActivity() != null){
+			getActivity().getContentResolver().insert(FeedReaderContentProvider.CONTENT_URI_ARTICLES, cv);
+		}
+	}
+
+
+	private ArrayList<String> extractFeedUrlsAsList() {
+		if(getActivity() == null) {
+			return null;
+		}
+
+		Cursor cursor = getActivity().getContentResolver().query(FeedReaderContentProvider.CONTENT_URI_FEEDS,
+				new String[]{ID, TITLE, TEXT}, null, null, null);
+
+		ArrayList<String> list = new ArrayList<>();
+		int textColumnIndex = 0;
+		if (cursor != null) {
+			textColumnIndex = cursor.getColumnIndex(TEXT);
+			while (cursor.moveToNext()) {
+				String url = cursor.getString(textColumnIndex);
+				list.add(url);
+			}
+			cursor.close();
+		}
+
+		return list;
 	}
 }

@@ -13,7 +13,6 @@ import cz.cvut.marekp11.feedreader.data.feed.FeedTable;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
-// TODO feedy Z DB
 public class FeedReaderContentProvider extends ContentProvider {
 
 	private FeedReaderDatabaseHelper mFeedReaderDbHelper;

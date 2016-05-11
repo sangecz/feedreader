@@ -30,13 +30,11 @@ public class CustomLayoutDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Activity context) {
         super.onAttach(context);
 
         try {
-            if(context instanceof Activity) {
-                mListener = (CustomLayoutDialogFragmentListener) context;
-            }
+            mListener = (CustomLayoutDialogFragmentListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + getString(R.string.must_implement)

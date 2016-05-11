@@ -9,5 +9,6 @@ public class DbConstants {
 	public static final String ID = "_id";
 	public static final String TITLE = "title";
 	public static final String TEXT = "text";
+	public static final String LINK = "link";
 
 }

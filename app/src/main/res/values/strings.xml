@@ -12,7 +12,7 @@
 
     <string name="article_detail">Article detail</string>
     <string name="article_share">Choose app to share</string>
-    <string name="article_share_text">I found an awesome article to read, check it here: http://example.com</string>
+    <string name="article_share_text">I found an awesome article to read, check it here: </string>
 
     <string name="feed_add_title">Add feed</string>
     <string name="feed_add_placeholder_url">Type feed url</string>
@@ -31,6 +31,7 @@
     <string name="toast_no_internet">No internet connection. Could not refresh feeds.</string>
     <string name="toast_bad_url">Bad feed URL format. Feed not added.</string>
     <string name="toast_refresh_failed">Refresh failed</string>
+    <string name="toast_entry_not_loaded">Article not loaded yet. Please wait.</string>
 
     <string name="must_implement">must implement</string>
     <string name="link_prefix"><![CDATA[ <p><a href=\" ]]></string>

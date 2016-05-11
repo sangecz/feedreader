@@ -10,7 +10,7 @@ import cz.cvut.marekp11.feedreader.data.feed.FeedTable;
 public class FeedReaderDatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "feedreader.db";
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
 
 	public FeedReaderDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
