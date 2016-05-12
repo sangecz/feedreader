@@ -1,14 +1,12 @@
-package cz.cvut.marekp11.feedreader.connectivity;
+package cz.cvut.marekp11.feedreader.update;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndEntryImpl;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 
 import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
+import cz.cvut.marekp11.feedreader.update.helpers.RssAtomFeedRetriever;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 

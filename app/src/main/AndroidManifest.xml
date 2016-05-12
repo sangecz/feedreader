@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cz.cvut.marekp11.feedreader" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +14,7 @@
         android:theme="@style/AppTheme" >
 
         <activity
-            android:name=".list.ListActivity"
+            android:name="cz.cvut.marekp11.feedreader.list.ListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,9 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".item.ItemActivity" />
+        <activity android:name="cz.cvut.marekp11.feedreader.item.ItemActivity" />
 
-        <activity android:name=".feed.FeedListActivity" />
+        <activity android:name="cz.cvut.marekp11.feedreader.feed.FeedListActivity" />
 
         <provider
             android:name="cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider"
@@ -28,14 +33,24 @@
             android:exported="false" />
 
         <service
-            android:name="cz.cvut.marekp11.feedreader.connectivity.UpdateService"
+            android:name="cz.cvut.marekp11.feedreader.update.UpdateService"
             android:enabled="true"
             android:exported="false" />
 
+        <receiver
+            android:name=".update.broadcasts.BootCompleteBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".update.broadcasts.MyBroadcastReceiver"
+            android:exported="false">
+        </receiver>
 
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
 
 </manifest>

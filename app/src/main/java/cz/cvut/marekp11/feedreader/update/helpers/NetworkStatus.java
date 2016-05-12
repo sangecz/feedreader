@@ -1,4 +1,4 @@
-package cz.cvut.marekp11.feedreader.connectivity;
+package cz.cvut.marekp11.feedreader.update.helpers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

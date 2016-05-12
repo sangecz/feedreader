@@ -2,30 +2,32 @@ package cz.cvut.marekp11.feedreader.list;
 
 import android.app.Activity;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.app.LoaderManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import cz.cvut.marekp11.feedreader.R;
+import cz.cvut.marekp11.feedreader.update.helpers.DataHolder;
+import cz.cvut.marekp11.feedreader.update.helpers.MyAlarm;
+import cz.cvut.marekp11.feedreader.update.UpdateService;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
 import cz.cvut.marekp11.feedreader.feed.FeedListActivity;
-import cz.cvut.marekp11.feedreader.item.ItemActivity;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
 public class ListFragment extends android.app.ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, UpdateService.TaskCallbacks {
 
     private static final int ARTICLE_LOADER = 1;
 
@@ -49,6 +51,7 @@ public class ListFragment extends android.app.ListFragment
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
+        MyAlarm.setRepeatingUpdate(getActivity().getApplicationContext());
     }
 
     @Override
@@ -57,12 +60,57 @@ public class ListFragment extends android.app.ListFragment
         setListAdapter(mAdapter);
     }
 
+    private ProgressBar mProgressBar;
+    private ImageView mProgressBarImg;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(ARTICLE_LOADER, null, this);
 
+        initActionBar();
+
+        toggleProgressBarSpin(UpdateService.sRunning);
     }
+
+    private void initActionBar() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+
+        mProgressBar = (ProgressBar) toolbar.findViewById(R.id.progress_bar);
+        // set spinning wheel's color
+        mProgressBar.getIndeterminateDrawable().setColorFilter(
+                getResources().getColor(R.color.gray),
+                android.graphics.PorterDuff.Mode.SRC_IN);
+
+        mProgressBarImg = (ImageView) toolbar.findViewById(R.id.progress_bar_img);
+        mProgressBarImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                update();
+            }
+        });
+
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mProgressBarImg.setVisibility(View.VISIBLE);
+
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        ((ListActivity) getActivity()).setSupportActionBar(toolbar);
+    }
+
+    private void update() {
+        getActivity().startService(new Intent(getActivity(), UpdateService.class));
+    }
+
+    private void toggleProgressBarSpin(boolean spin) {
+        if (spin) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mProgressBarImg.setVisibility(View.INVISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.INVISIBLE);
+            mProgressBarImg.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     @Override
     public void onAttach(Activity context) {
@@ -75,6 +123,24 @@ public class ListFragment extends android.app.ListFragment
                     + getString(R.string.must_implement) + ListFragment.FragmentListListener.class.getSimpleName());
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // set weakreference for service
+        setCallback(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        setCallback(null);
+    }
+
+    private void setCallback(Object o) {
+        DataHolder.getInstance().save(DataHolder.LIST_FRAGMENT_ID, o == null ? null : o);
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -139,7 +205,42 @@ public class ListFragment extends android.app.ListFragment
         }
     }
 
+    /**
+     * TASK CALLBACKS
+     */
+
+    @Override
+    public void onPreExecute() {
+        toggleProgressBarSpin(true);
+        Toast.makeText(getActivity(), getString(R.string.toast_refresh), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNoConnection() {
+        toggleProgressBarSpin(false);
+        Toast.makeText(getActivity(), getString(R.string.toast_no_internet), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCancelled() {
+        toggleProgressBarSpin(false);
+        interruptedUpdateNotice();
+    }
+
+    @Override
+    public void onPostExecute(boolean failed) {
+        toggleProgressBarSpin(false);
+        if (failed) {
+            interruptedUpdateNotice();
+        }
+    }
+
+    private void interruptedUpdateNotice() {
+        Toast.makeText(getActivity(), getString(R.string.toast_refresh_failed), Toast.LENGTH_LONG).show();
+    }
+
+
     public interface FragmentListListener {
-        public void showItem(String id);
+        public void show();
     }
 }

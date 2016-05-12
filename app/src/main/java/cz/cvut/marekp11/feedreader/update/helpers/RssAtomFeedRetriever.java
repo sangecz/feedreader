@@ -1,4 +1,4 @@
-package cz.cvut.marekp11.feedreader.connectivity;
+package cz.cvut.marekp11.feedreader.update.helpers;
 
 import com.google.code.rome.android.repackaged.com.sun.syndication.feed.synd.SyndFeed;
 import com.google.code.rome.android.repackaged.com.sun.syndication.fetcher.FeedFetcher;
