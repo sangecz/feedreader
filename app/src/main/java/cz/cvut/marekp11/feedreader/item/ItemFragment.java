@@ -1,5 +1,6 @@
 package cz.cvut.marekp11.feedreader.item;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -8,8 +9,13 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,22 +26,30 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider;
+import cz.cvut.marekp11.feedreader.list.ListActivity;
+
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
 public class ItemFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int FEED_LOADER = 2;
+    private static final String TWO_PANE = "two_pane";
+    private static final String TAG = ItemFragment.class.getSimpleName();
     private ScrollView mFragmentView;
-    private String articleId;
+    private String mArticleId;
     private Cursor mData;
     private String mLink;
+    private boolean mTwoPane;
 
-    public static ItemFragment newInstance(String id) {
+    public static ItemFragment newInstance(String id, boolean twoPane) {
 
         Bundle args = new Bundle();
         args.putString(ID, id);
+        args.putBoolean(TWO_PANE, twoPane);
 
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
@@ -58,6 +72,8 @@ public class ItemFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onActivityCreated(savedInstanceState);
 
         getLoaderManager().initLoader(FEED_LOADER, null, this);
+
+        setActionBar();
     }
 
     @Override
@@ -65,10 +81,43 @@ public class ItemFragment extends Fragment implements LoaderManager.LoaderCallba
         mFragmentView = (ScrollView) inflater.inflate(R.layout.fragment_item, container, false);
 
         if(getArguments() != null) {
-            articleId = getArguments().getString(ID);
+            mArticleId = getArguments().getString(ID);
+            mTwoPane = getArguments().getBoolean(TWO_PANE);
         }
 
         return mFragmentView;
+    }
+
+    private void setActionBar() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        Log.d(TAG, "mTwoPane=" + mTwoPane);
+
+        if(!mTwoPane) {
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mTwoPane) {
+                        getActivity().finish();
+                    }
+                }
+            });
+        } else {
+            toolbar.setNavigationIcon(null);
+            toolbar.getMenu().clear();
+        }
+
+        ActionBar actionBar =  ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if(actionBar != null && !mTwoPane){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+    }
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -101,7 +150,8 @@ public class ItemFragment extends Fragment implements LoaderManager.LoaderCallba
             cursor.moveToFirst();
 
             TextView headlineTV = (TextView) mFragmentView.findViewById(R.id.item_headline);
-            headlineTV.setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(TITLE))));
+            Spanned titleStr = Html.fromHtml(cursor.getString(cursor.getColumnIndex(TITLE)));
+            headlineTV.setText(titleStr);
 
             mLink = cursor.getString(cursor.getColumnIndex(LINK));
 
@@ -116,8 +166,11 @@ public class ItemFragment extends Fragment implements LoaderManager.LoaderCallba
     // loader's callbacks
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), Uri.withAppendedPath(FeedReaderContentProvider.CONTENT_URI_ARTICLES, articleId),
-                null, null, null, null);
+        if(!mArticleId.equals(ListActivity.EMPTY_ARTICLE_ID)) {
+            return new CursorLoader(getActivity(), Uri.withAppendedPath(FeedReaderContentProvider.CONTENT_URI_ARTICLES, mArticleId),
+                    null, null, null, null);
+        }
+        return null;
     }
 
     @Override

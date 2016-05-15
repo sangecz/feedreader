@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="18sp"
+            android:text="@string/item_title_empty"
             android:layout_marginBottom="@dimen/article_vertical_margin"
             />
 

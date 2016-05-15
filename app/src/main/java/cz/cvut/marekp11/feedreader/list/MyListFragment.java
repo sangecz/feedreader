@@ -13,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import cz.cvut.marekp11.feedreader.R;
+import cz.cvut.marekp11.feedreader.item.ItemActivity;
 import cz.cvut.marekp11.feedreader.update.helpers.DataHolder;
 import cz.cvut.marekp11.feedreader.update.helpers.MyAlarm;
 import cz.cvut.marekp11.feedreader.update.UpdateService;
@@ -26,24 +29,29 @@ import cz.cvut.marekp11.feedreader.feed.FeedListActivity;
 
 import static cz.cvut.marekp11.feedreader.data.DbConstants.*;
 
-public class ListFragment extends android.app.ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, UpdateService.TaskCallbacks {
+public class MyListFragment extends android.app.ListFragment
+        implements LoaderManager.LoaderCallbacks<Cursor>,
+        UpdateService.TaskCallbacks,
+        AdapterView.OnItemClickListener {
 
+    private static final String TAG = MyListFragment.class.getSimpleName();
     private static final int ARTICLE_LOADER = 1;
 
     private FragmentListListener mListener;
     private ArticleCursorAdapter mAdapter;
+    private ProgressBar mProgressBar;
+    private ImageView mProgressBarImg;
 
-    public static ListFragment newInstance() {
+    public static MyListFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        ListFragment fragment = new ListFragment();
+        MyListFragment fragment = new MyListFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public ListFragment() {
+    public MyListFragment() {
     }
 
     @Override
@@ -53,15 +61,6 @@ public class ListFragment extends android.app.ListFragment
         setHasOptionsMenu(true);
         MyAlarm.setRepeatingUpdate(getActivity().getApplicationContext());
     }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setListAdapter(mAdapter);
-    }
-
-    private ProgressBar mProgressBar;
-    private ImageView mProgressBarImg;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -111,16 +110,39 @@ public class ListFragment extends android.app.ListFragment
         }
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setListAdapter(mAdapter);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+//        Cursor entry = (Cursor) mAdapter.getItem(position);
+//        int idColumn = entry.getColumnIndex(Contract.Entry._ID);
+//        Uri contentUri = ContentUris.withAppendedId(Contract.Entry.CONTENT_URI, entry.getLong(
+//                idColumn));
+//
+//        Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
+//        intent.setData(contentUri);
+//        startActivity(intent);
+        Log.d("SHIIIIIIT", "_________________--- PROSTE, NE! ---------=========");
+    }
 
     @Override
     public void onAttach(Activity context) {
         super.onAttach(context);
 
+        Log.d(TAG, "onAttach");
+        if(mAdapter != null) {
+            mAdapter.attachOnItemClickListener(getActivity());
+        }
+
         try {
             mListener = (FragmentListListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
-                    + getString(R.string.must_implement) + ListFragment.FragmentListListener.class.getSimpleName());
+                    + getString(R.string.must_implement) + MyListFragment.FragmentListListener.class.getSimpleName());
         }
     }
 
@@ -183,7 +205,9 @@ public class ListFragment extends android.app.ListFragment
             case ARTICLE_LOADER:
                 if (mAdapter == null) {
                     mAdapter = new ArticleCursorAdapter(getActivity(), cursor);
+                    mAdapter.attachOnItemClickListener(getActivity());
                     setListAdapter(mAdapter);
+                    getListView().setOnItemClickListener(this);
                 }
                 mAdapter.changeCursor(cursor);
                 break;
@@ -239,6 +263,11 @@ public class ListFragment extends android.app.ListFragment
         Toast.makeText(getActivity(), getString(R.string.toast_refresh_failed), Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d("SHIIIIIIT", "_________________--- PROSTE, NE2222222! ---------=========");
+
+    }
 
     public interface FragmentListListener {
         public void show();

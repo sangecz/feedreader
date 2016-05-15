@@ -22,29 +22,41 @@ import android.widget.TextView;
 
 public class ArticleCursorAdapter extends CursorAdapter {
 
+	public interface ItemClickedListener {
+		public void clickedAt(String id) ;
+	}
 
 	private static class ViewHolder {
 
 		TextView headline;
 
 		TextView preview;
+
 		ViewHolder(View view) {
 			headline = (TextView) view.findViewById(R.id.headline);
 			preview = (TextView) view.findViewById(R.id.preview);
 		}
-
 	}
+
 	private int mHeadlineColumn;
 	private int mPreviewColumn;
 	private int mIdColumn;
 	private LayoutInflater mInflater;
-	private Context mContext;
+	private ItemClickedListener mListener;
 
 	public ArticleCursorAdapter(Context context, Cursor cursor) {
 		super(context, cursor, false);
 		mInflater = LayoutInflater.from(context);
-		mContext = context;
 		initColumns(cursor);
+	}
+
+	public void attachOnItemClickListener(Context context) {
+		try {
+			mListener = (ItemClickedListener) context;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(context.toString()
+					+ context.getString(R.string.must_implement) + ArticleCursorAdapter.ItemClickedListener.class.getSimpleName());
+		}
 	}
 
 	@Override
@@ -88,7 +100,7 @@ public class ArticleCursorAdapter extends CursorAdapter {
 		return new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				ItemActivity.start(mContext, id);
+				mListener.clickedAt(id);
 			}
 		};
 	}
@@ -100,6 +112,4 @@ public class ArticleCursorAdapter extends CursorAdapter {
 			mIdColumn = cursor.getColumnIndex(ID);
 		}
 	}
-
-
 }

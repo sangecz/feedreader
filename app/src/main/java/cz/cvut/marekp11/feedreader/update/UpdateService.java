@@ -151,7 +151,7 @@ public class UpdateService extends Service {
 
                 cv.put(LINK, e.getLink());
 
-                publishProgress(cv);
+//                publishProgress(cv);
 
                 contentValues.add(cv);
             }
@@ -159,7 +159,7 @@ public class UpdateService extends Service {
 
         @Override
         protected void onProgressUpdate(ContentValues... cv) {
-            insertFeed(cv[0]);
+//            insertFeed(cv[0]);
         }
 
         @Override

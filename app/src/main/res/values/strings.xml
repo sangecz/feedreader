@@ -36,6 +36,7 @@
     <string name="must_implement">must implement</string>
     <string name="link_prefix"><![CDATA[ <p><a href=\" ]]></string>
     <string name="link_postfix"><![CDATA[ \">Link</a></p> ]]></string>
+    <string name="item_title_empty">No article selected</string>
 
 
 </resources>

@@ -28,13 +28,14 @@ public class ItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
 
-        setActionBar();
+//        setActionBar();
 
         if(savedInstanceState == null) {
             Intent i = getIntent();
             String itemId = i.getStringExtra(ID);
 
-            ItemFragment fragment = ItemFragment.newInstance(itemId);
+            // startovan z aktivity -> neni twoPane
+            ItemFragment fragment = ItemFragment.newInstance(itemId, false);
             getFragmentManager().beginTransaction()
                     .add(R.id.container_item, fragment)
                     .commit();
