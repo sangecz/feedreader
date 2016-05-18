@@ -27,8 +27,6 @@ import static cz.cvut.marekp11.feedreader.data.DbConstants.LINK;
 import static cz.cvut.marekp11.feedreader.data.DbConstants.TEXT;
 import static cz.cvut.marekp11.feedreader.data.DbConstants.TITLE;
 
-// FIXME too much work on main thread
-
 public class UpdateService extends Service {
 
     private static final String TAG = "UpdateService";
@@ -138,6 +136,7 @@ public class UpdateService extends Service {
         }
 
         private void parseEntries(StringBuilder sb, ArrayList<ContentValues> contentValues, ArrayList<SyndEntryImpl> entries) {
+            int cnt = 0;
             for (SyndEntryImpl e : entries) {
                 ContentValues cv = new ContentValues();
                 cv.put(TITLE, e.getTitle());
@@ -150,6 +149,9 @@ public class UpdateService extends Service {
                 cv.put(TEXT, sb.toString());
 
                 cv.put(LINK, e.getLink());
+
+                SystemClock.sleep(1000);
+                Log.d(TAG, "loading entry#" + cnt++ + " out of " + entries.size());
 
 //                publishProgress(cv);
 

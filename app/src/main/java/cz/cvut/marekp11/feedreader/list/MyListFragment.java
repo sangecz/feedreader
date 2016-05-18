@@ -126,7 +126,7 @@ public class MyListFragment extends android.app.ListFragment
 //        Intent intent = new Intent(getActivity(), ArticleDetailActivity.class);
 //        intent.setData(contentUri);
 //        startActivity(intent);
-        Log.d("SHIIIIIIT", "_________________--- PROSTE, NE! ---------=========");
+        Log.d(TAG, "_________________--- PROSTE, NE! ---------=========");
     }
 
     @Override
