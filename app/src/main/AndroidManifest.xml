@@ -27,6 +27,8 @@
 
         <activity android:name="cz.cvut.marekp11.feedreader.feed.FeedListActivity" />
 
+        <activity android:name="cz.cvut.marekp11.feedreader.pref.PreferencesActivity" />
+
         <provider
             android:name="cz.cvut.marekp11.feedreader.data.FeedReaderContentProvider"
             android:authorities="cz.cvut.feedreader"

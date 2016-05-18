@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import cz.cvut.marekp11.feedreader.R;
 import cz.cvut.marekp11.feedreader.item.ItemActivity;
+import cz.cvut.marekp11.feedreader.pref.PreferencesActivity;
 import cz.cvut.marekp11.feedreader.update.helpers.DataHolder;
 import cz.cvut.marekp11.feedreader.update.helpers.MyAlarm;
 import cz.cvut.marekp11.feedreader.update.UpdateService;
@@ -178,7 +179,8 @@ public class MyListFragment extends android.app.ListFragment
             return true;
         }
         if (id == R.id.action_prefs) {
-            Toast.makeText(getActivity(), getString(R.string.action_prefs), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), getString(R.string.action_prefs), Toast.LENGTH_SHORT).show();
+            PreferencesActivity.start(getActivity());
             return true;
         }
 

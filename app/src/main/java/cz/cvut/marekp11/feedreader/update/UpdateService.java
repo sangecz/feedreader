@@ -80,6 +80,8 @@ public class UpdateService extends Service {
             Log.d(TAG, " mTask.execute()");
             DownloadAndParseFeedsAsyncTask mTask = new DownloadAndParseFeedsAsyncTask();
             mTask.execute();
+        } else {
+            MyWakeLockHelper.release();
         }
         return sRunning;
     }
