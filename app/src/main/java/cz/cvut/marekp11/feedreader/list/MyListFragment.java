@@ -70,6 +70,7 @@ public class MyListFragment extends android.app.ListFragment
 
         initActionBar();
 
+        // FIXME bindovat se k service, misto tohoto
         toggleProgressBarSpin(UpdateService.sRunning);
     }
 
